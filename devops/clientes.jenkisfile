@@ -129,8 +129,32 @@ pipeline {
                         sh 'echo  $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV'
                         sh 'echo  $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA'
                         sh "docker tag $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER}"
+                        sh "docker tag $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:latest"
                     }
                 }
+
+                stage('Docker push qa') {
+                agent any
+                
+                environment {
+                        DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
+                    }
+                steps {
+
+                    script {
+                        def props = readProperties file: 'devops/qa.env'
+                        env.APP = props.APP
+                        env.APP_MODULE = props.APP_MODULE
+                        env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                        }
+
+                    sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:latest'
+                    sh 'docker logout'
+
+                }
+        }
 
         
     }
