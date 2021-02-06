@@ -14,7 +14,6 @@ pipeline {
                 //git credentialsId: 'githubuser',
                 //    url: 'https://github.com/mzegarras/devops202101-clientes.git',
                  //   branch: 'main'
-
                 sh 'mvn -B verify'
             }
 
