@@ -112,5 +112,36 @@ stage('Deploy to GKE') {
         }                
 
         
+        
+        stage('Docker tag QA') {            
+                    agent any
+                    input{
+                        message "Do you want to proceed for production qa?"
+                    }
+                    steps {
+
+                        script {
+                            def props_dev = readProperties file: 'devops/dev.env'
+                            env.APP_DEV = props_dev.APP
+                            env.APP_MODULE_DEV = props_dev.APP_MODULE
+                            env.DOCKER_REPOSITORY_DEV= props_dev.DOCKER_REPOSITORY
+
+                            def props_qa = readProperties file: 'devops/qa.env'
+                            env.APP_QA = props_qa.APP
+                            env.APP_MODULE_QA = props_qa.APP_MODULE
+                            env.DOCKER_REPOSITORY_QA= props_qa.DOCKER_REPOSITORY
+                        }
+
+                        sh 'echo  $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV'
+                        sh 'echo  $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA'
+                        sh "docker tag $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER}"
+                        sh "docker tag $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:latest"
+                    }
+                }
+        
+        
+        
+        
+        
     }
 }
