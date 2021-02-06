@@ -72,8 +72,6 @@ pipeline {
                     sh 'docker logout'
 
                 }
-            } 
-
         
         stage('Deploy to GKE') {
              agent {
