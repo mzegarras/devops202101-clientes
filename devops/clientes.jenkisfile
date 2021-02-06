@@ -4,30 +4,11 @@ pipeline {
 
     stages {
         
-        stage('master-branch-stuff'){
-            agent any
-            when{
-                branch 'master'
-            }
-            steps {
-                echo 'run this stage - ony if the branch = master branch'
-            }
-        }
-
-        stage('feature-branch-stuff') {
-            agent label:'test-node'
-            when { branch "feature/*" }
-            steps {
-                echo 'run this stage - only if the branch name started with feature/'
-            }
-        }
-
         stage('Build') {
             agent {
                 docker { image 'maven:3.6.3-openjdk-11-slim' }
             }
             
-
             steps {
 
                 git credentialsId: 'githubuser',
@@ -153,7 +134,7 @@ pipeline {
                     }
                 }
 
-                stage('Docker push qa') {                 
+                stage('Docker push QA') {                 
                 agent any
                 
                 environment {
