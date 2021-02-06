@@ -1,0 +1,47 @@
+version: '3.3'
+services:
+  lab01:
+    image: mzegarra/lab01:0.0.2
+    build:
+      context: .
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      SERVER_CONFIG_ENABLED: "true"
+      SERVER_CONFIG_URL: "http://localhost:8080/config"
+      SERVER_CONFIG_FAIL_FAST: "false"
+      # "--spring.config.location=file:${configDirectory}/application.yml"]
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db01
+      MYSQL_USER: lab01user
+      MYSQL_PASSWORD: lab01userpwd
+  bus:
+    image: "rabbitmq:3-management"
+    #environment:
+      #RABBITMQ_DEFAULT_USER: "rabbitmq"
+      #RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./rabbitmq_definitions.json:/etc/rabbitmq/definitions.json:ro
+  jaeger:
+    image: "jaegertracing/all-in-one:latest"
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: "9411"
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 9411:9411
