@@ -161,6 +161,7 @@ stage('Deploy to GKE') {
                     sh 'docker logout'
 
                 }
+          }
         
         
     }
