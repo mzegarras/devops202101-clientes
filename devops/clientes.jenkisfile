@@ -86,7 +86,8 @@ pipeline {
                 CLOUDSDK_CONFIG="/tmp"
                 KUBECONFIG="~/.kube"
             }
-             script {
+             steps {
+                  script {
                             def props = readProperties file: 'devops/dev.env'
                             env.APP = props.APP
                             env.APP_MODULE = props.APP_MODULE
@@ -97,8 +98,7 @@ pipeline {
                             env.LOCATION = props.LOCATION
                             env.CREDENTIALS_ID = props.CREDENTIALS_ID
                         }
-
-             steps {
+                        
                 withCredentials([[$class: 'FileBinding', credentialsId: env.CREDENTIALS_ID, variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
                     sh 'echo "${GOOGLE_APPLICATION_CREDENTIALS}"' // returns ****
                     sh 'gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS'
