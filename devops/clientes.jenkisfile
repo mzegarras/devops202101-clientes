@@ -28,6 +28,9 @@ pipeline {
 
          stage('Docker Build') {
                     agent any
+                    when {
+                        branch 'master'
+                    }
                     steps {
 
                         script {
