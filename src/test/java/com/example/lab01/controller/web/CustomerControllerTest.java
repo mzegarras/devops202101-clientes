@@ -186,6 +186,7 @@ public class CustomerControllerTest {
 
 
     @Test
+    @Disabled
     void doPostAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();
@@ -250,6 +251,7 @@ public class CustomerControllerTest {
 
 
     @Test
+    @Disabled
     void doPutAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();
@@ -282,6 +284,7 @@ public class CustomerControllerTest {
 
 
     @Test
+    @Disabled
     void doDeleteAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();

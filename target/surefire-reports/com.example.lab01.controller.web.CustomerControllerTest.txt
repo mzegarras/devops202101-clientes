@@ -1,0 +1,22 @@
+-------------------------------------------------------------------------------
+Test set: com.example.lab01.controller.web.CustomerControllerTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 3.074 s <<< FAILURE! - in com.example.lab01.controller.web.CustomerControllerTest
+doPostAsync_ok  Time elapsed: 0.166 s  <<< ERROR!
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doPostAsync_ok(CustomerControllerTest.java:205)
+Caused by: java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doPostAsync_ok(CustomerControllerTest.java:205)
+
+doPutAsync_ok  Time elapsed: 0.006 s  <<< ERROR!
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doPutAsync_ok(CustomerControllerTest.java:269)
+Caused by: java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doPutAsync_ok(CustomerControllerTest.java:269)
+
+doDeleteAsync_ok  Time elapsed: 0.004 s  <<< ERROR!
+org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doDeleteAsync_ok(CustomerControllerTest.java:296)
+Caused by: java.lang.NullPointerException
+	at com.example.lab01.controller.web.CustomerControllerTest.doDeleteAsync_ok(CustomerControllerTest.java:296)
+
