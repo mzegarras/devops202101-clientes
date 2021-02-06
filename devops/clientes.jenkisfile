@@ -25,5 +25,30 @@ pipeline {
                 }
             }
         }
+
+
+         stage('Docker Build') {
+                    agent any
+                    steps {
+
+                        script {
+                        def props = readProperties file: 'devops/dev.env'
+                        env.APP = props.APP
+                        env.APP_MODULE = props.APP_MODULE
+                        env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                        }
+
+                        sh 'echo  $DOCKER_REPOSITORY/$APP-$APP_MODULE'
+
+                        copyArtifacts filter: 'target/*.jar',
+                                    fingerprintArtifacts: true,
+                                    projectName: '${JOB_NAME}',
+                                    flatten: true,
+                                    selector: specific('${BUILD_NUMBER}'),
+                                    target: 'target';
+                        sh "docker build --file ./src/main/docker/Dockerfile --tag $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER} ."
+                        sh "docker tag $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}  $DOCKER_REPOSITORY/$APP-$APP_MODULE:latest"
+                    }
+                }
     }
 }
