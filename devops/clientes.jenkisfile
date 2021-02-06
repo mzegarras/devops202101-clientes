@@ -28,6 +28,9 @@ pipeline {
 
          stage('Docker Build') {
                     agent any
+                    when {
+                        branch 'master'
+                    }
                     steps {
 
                         script {
@@ -49,6 +52,7 @@ pipeline {
                         sh "docker tag $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}  $DOCKER_REPOSITORY/$APP-$APP_MODULE:latest"
                     }
                 }
+                
 
         stage('Docker push') {         
                 agent any
