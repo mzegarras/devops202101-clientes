@@ -1,6 +1,6 @@
 package com.example.lab01.controller.web;
 
-
+import org.junit.jupiter.api.Disabled;
 import com.example.lab01.controller.web.dto.CustomerWebDto;
 import com.example.lab01.core.domain.Customer;
 import com.example.lab01.service.CustomerService;
@@ -186,7 +186,7 @@ public class CustomerControllerTest {
 
 
     @Test
-    @Disabled
+    @Disabled("Do not run in lower environment")
     void doPostAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();
@@ -251,7 +251,7 @@ public class CustomerControllerTest {
 
 
     @Test
-    @Disabled
+    @Disabled("Do not run in lower environment")
     void doPutAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();
@@ -284,7 +284,7 @@ public class CustomerControllerTest {
 
 
     @Test
-    @Disabled
+    @Disabled("Do not run in lower environment")
     void doDeleteAsync_ok() throws Exception {
         // Preparing data
         Customer customer = new Customer();
