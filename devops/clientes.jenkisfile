@@ -134,7 +134,7 @@ pipeline {
                     }
                 }
 
-                stage('Docker push qa') {                 
+                stage('Docker push QA') {                 
                 agent any
                 
                 environment {
