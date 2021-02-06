@@ -126,7 +126,8 @@ pipeline {
                             env.DOCKER_REPOSITORY_QA= props_qa.DOCKER_REPOSITORY
                         }
 
-                        sh 'echo  $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV --> $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA'
+                        sh 'echo  $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV'
+                        sh 'echo  $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA'
                         sh "docker tag $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER}"
                     }
                 }
