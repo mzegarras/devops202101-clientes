@@ -8,7 +8,7 @@ pipeline {
                 sh 'printenv'
             }
         }
-        
+
         stage('Build') {
             agent {
                 docker { image 'maven:3.6.3-openjdk-11-slim' }
@@ -18,7 +18,7 @@ pipeline {
 
                 //git credentialsId: 'githubuser',
                 //    url: 'https://github.com/mzegarras/devops202101-clientes.git',
-                ////   branch: 'main'
+                //   branch: 'main'
                 sh 'mvn -B verify'
             }
 
