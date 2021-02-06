@@ -109,11 +109,11 @@ pipeline {
 
         }
 
-            stage('Deploy approval'){
-                input "Deploy to qa?"
-            }
            stage('Docker tag QA') {
                     agent any
+                    input{
+                        message "Do you want to proceed for production qa?"
+                    }
                     steps {
 
                         script {
