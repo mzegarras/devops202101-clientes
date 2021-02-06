@@ -11,9 +11,9 @@ pipeline {
             
             steps {
 
-                ////git credentialsId: 'githubuser',
-                ////    url: 'https://github.com/mzegarras/devops202101-clientes.git',
-                ////   branch: 'main'
+                //git credentialsId: 'githubuser',
+                //    url: 'https://github.com/mzegarras/devops202101-clientes.git',
+                //   branch: 'main'
                 sh 'printenv'
                 sh 'mvn -B verify'
             }
