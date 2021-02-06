@@ -29,7 +29,7 @@ pipeline {
 
          stage('Docker Build') {
              when {
-                branch 'master'
+                branch 'main'
             }
                     agent any
                     steps {
@@ -56,7 +56,7 @@ pipeline {
 
         stage('Docker push') {
              when {
-                branch 'master'
+                branch 'main'
             }            
                 agent any
                 
@@ -83,7 +83,7 @@ pipeline {
 
         stage('Deploy to GKE') {
              when {
-                branch 'master'
+                branch 'main'
             }            
              agent {
                 docker { 
@@ -120,7 +120,7 @@ pipeline {
 
            stage('Docker tag QA') {
              when {
-                branch 'master'
+                branch 'main'
             }               
                     agent any
                     input{
@@ -149,7 +149,7 @@ pipeline {
 
                 stage('Docker push qa') {
                     when {
-                        branch 'master'
+                        branch 'main'
                     }                    
                 agent any
                 
