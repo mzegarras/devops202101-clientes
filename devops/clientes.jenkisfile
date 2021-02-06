@@ -28,9 +28,6 @@ pipeline {
 
 
          stage('Docker Build') {
-             when {
-                branch 'main'
-            }
                     agent any
                     steps {
 
@@ -54,10 +51,7 @@ pipeline {
                     }
                 }
 
-        stage('Docker push') {
-             when {
-                branch 'main'
-            }            
+        stage('Docker push') {         
                 agent any
                 
                 environment {
@@ -81,10 +75,7 @@ pipeline {
         }
 
 
-        stage('Deploy to GKE') {
-             when {
-                branch 'main'
-            }            
+        stage('Deploy to GKE') {        
              agent {
                 docker { 
                     image 'google/cloud-sdk:latest' 
@@ -118,10 +109,7 @@ pipeline {
 
         }
 
-           stage('Docker tag QA') {
-             when {
-                branch 'main'
-            }               
+           stage('Docker tag QA') {            
                     agent any
                     input{
                         message "Do you want to proceed for production qa?"
@@ -147,10 +135,7 @@ pipeline {
                     }
                 }
 
-                stage('Docker push qa') {
-                    when {
-                        branch 'main'
-                    }                    
+                stage('Docker push qa') {                 
                 agent any
                 
                 environment {
