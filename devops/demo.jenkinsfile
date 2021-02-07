@@ -75,7 +75,9 @@ pipeline {
 
         stage("Deploy to Production"){
             when {
-                GIT_BRANCH=='origin/main'
+                expression {
+                    return GIT_BRANCH=='origin/main'
+                }
             }
             steps { 
                  echo 'Deploy to Production'
