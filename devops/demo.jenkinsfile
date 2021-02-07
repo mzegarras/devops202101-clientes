@@ -10,14 +10,28 @@ pipeline {
     }
 
     stages {
-        stage('Initial Notification') {
-            steps {
-                 //put webhook for your notification channel 
-                 echo 'Pipeline Start Notification'
-                 sh 'printenv'
-                 sh "echo ${GIT_BRANCH}"
-            }
+
+    stage('Initial Notification') {
+        steps {
+                //put webhook for your notification channel 
+                echo 'Pipeline Start Notification'
+                sh 'printenv'
+                sh "echo ${GIT_BRANCH}"
         }
+    }
+
+
+      
+      // Execute when branch = 'master'
+      stage("BASIC WHEN - Branch") {
+         when {
+		    branch 'main'
+		 }
+         steps {
+            echo 'BASIC WHEN - Master Branch!'
+         }
+      }
+    
 
 
     stage('Code Analysis') {           
