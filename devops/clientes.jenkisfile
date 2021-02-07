@@ -11,7 +11,7 @@ pipeline {
             
             steps {
 
-                ////git credentialsId: 'githubuser',
+                //git credentialsId: 'githubuser',
                 //    url: 'https://github.com/mzegarras/devops202101-clientes.git',
                 //   branch: 'main'
                 sh 'printenv'
@@ -24,8 +24,9 @@ pipeline {
                 }
             }
         }
-
-
+        
+        
+        
          stage('Docker Build') {
                     agent any
                     steps {
@@ -51,14 +52,153 @@ pipeline {
                 }
                 
 
-        
-
-
-      
-
-          
+    
+     stage('Docker push') {         
+                agent any
                 
+                environment {
+                        DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
+                    }
+                steps {
 
+                    script {
+                        def props = readProperties file: 'devops/dev.env'
+                        env.APP = props.APP
+                        env.APP_MODULE = props.APP_MODULE
+                        env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                        }
+
+                    sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:latest'
+                    sh 'docker logout'
+
+                }
+        }
+                
+                
+stage('Deploy to dev') {        
+             agent {
+                docker { 
+                    image 'google/cloud-sdk:latest' 
+                }
+                
+            }
+            environment {
+                CLOUDSDK_CONFIG="/tmp"
+                KUBECONFIG="~/.kube"
+            }
+             steps {
+                  script {
+                            def props = readProperties file: 'devops/dev.env'
+                            env.APP = props.APP
+                            env.APP_MODULE = props.APP_MODULE
+                            env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                            
+                            env.PROJECT_ID = props.PROJECT_ID
+                            env.CLUSTER_NAME = props.CLUSTER_NAME
+                            env.LOCATION = props.LOCATION
+                            env.CREDENTIALS_ID = props.CREDENTIALS_ID
+                        }
+
+                withCredentials([[$class: 'FileBinding', credentialsId: env.CREDENTIALS_ID, variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
+                    sh 'echo "${GOOGLE_APPLICATION_CREDENTIALS}"' // returns ****
+                    sh 'gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS'
+                    sh 'gcloud container clusters get-credentials $CLUSTER_NAME --zone $LOCATION --project $PROJECT_ID'
+                    sh 'kubectl set image deployment/clientes-manuelzegarra lab01=$DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}'
+                }
+            }
+
+        }                
+
+        
+        
+        stage('Docker tag QA') {            
+                    agent any
+                    input{
+                        message "Do you want to proceed for production qa?"
+                    }
+                    steps {
+
+                        script {
+                            def props_dev = readProperties file: 'devops/dev.env'
+                            env.APP_DEV = props_dev.APP
+                            env.APP_MODULE_DEV = props_dev.APP_MODULE
+                            env.DOCKER_REPOSITORY_DEV= props_dev.DOCKER_REPOSITORY
+
+                            def props_qa = readProperties file: 'devops/qa.env'
+                            env.APP_QA = props_qa.APP
+                            env.APP_MODULE_QA = props_qa.APP_MODULE
+                            env.DOCKER_REPOSITORY_QA= props_qa.DOCKER_REPOSITORY
+                        }
+
+                        sh 'echo  $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV'
+                        sh 'echo  $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA'
+                        sh "docker tag $DOCKER_REPOSITORY_DEV/$APP_DEV-$APP_MODULE_DEV:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER}"
+                        sh "docker tag $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:${BUILD_NUMBER} $DOCKER_REPOSITORY_QA/$APP_QA-$APP_MODULE_QA:latest"
+                    }
+                }
+        
+        
+        stage('Docker push QA') {                 
+                agent any
+                
+                environment {
+                        DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
+                    }
+                steps {
+
+                    script {
+                        def props = readProperties file: 'devops/qa.env'
+                        env.APP = props.APP
+                        env.APP_MODULE = props.APP_MODULE
+                        env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                        }
+
+                    sh 'docker login -u ${DOCKER_HUB_CREDENTIALS_USR} -p ${DOCKER_HUB_CREDENTIALS_PSW}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}'
+                    sh 'docker push $DOCKER_REPOSITORY/$APP-$APP_MODULE:latest'
+                    sh 'docker logout'
+
+                }
+          }
+          
+          
+          
+          stage('Deploy to qa') {        
+             agent {
+                docker { 
+                    image 'google/cloud-sdk:latest' 
+                }
+                
+            }
+            environment {
+                CLOUDSDK_CONFIG="/tmp"
+                KUBECONFIG="~/.kube"
+            }
+             steps {
+                  script {
+                            def props = readProperties file: 'devops/qa.env'
+                            env.APP = props.APP
+                            env.APP_MODULE = props.APP_MODULE
+                            env.DOCKER_REPOSITORY= props.DOCKER_REPOSITORY
+                            
+                            env.PROJECT_ID = props.PROJECT_ID
+                            env.CLUSTER_NAME = props.CLUSTER_NAME
+                            env.LOCATION = props.LOCATION
+                            env.CREDENTIALS_ID = props.CREDENTIALS_ID
+                        }
+
+                withCredentials([[$class: 'FileBinding', credentialsId: env.CREDENTIALS_ID, variable: 'GOOGLE_APPLICATION_CREDENTIALS']]) {
+                    sh 'echo "${GOOGLE_APPLICATION_CREDENTIALS}"' // returns ****
+                    sh 'gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS'
+                    sh 'gcloud container clusters get-credentials $CLUSTER_NAME --zone $LOCATION --project $PROJECT_ID'
+                    sh 'kubectl set image deployment/clientes-manuelzegarra lab01=$DOCKER_REPOSITORY/$APP-$APP_MODULE:${BUILD_NUMBER}'
+                }
+            }
+
+        }
+        
         
     }
 }
