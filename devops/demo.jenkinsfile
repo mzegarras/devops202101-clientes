@@ -20,21 +20,28 @@ pipeline {
             }
             post {
                 always {
-                    echo 'One way or another, I have finished'
+                    echo 'Siempre se ejecuta'
                     deleteDir() /* clean up our workspace */
                     sendEmail("One way or another, I have finished")
                 }
                 success {
-                    echo 'I succeeded!'
+                    echo 'Se ejecutará si el build no falla'
                     sendEmail("I succeeded!")
                 }
+                failure {
+                    echo 'Se ejecutará si el build falla'
+                    echo 'ERROR'
+                    sendEmail("ERROR")
+                }
                 unstable {
+                    echo 'Se ejecutará si el job se marca como inestable'
                     echo 'I am unstable :/'
                     sendEmail("I am unstable :/")
                 }
-                failure {
-                    echo 'ERROR'
-                    sendEmail("ERROR")
+                changed {
+                    echo 'Se ejecutará si fallo-->OK'
+                    echo 'Se ejecutará si OK-->fallo'
+                    sendEmail("I am unstable :/")
                 }
             }
         }
