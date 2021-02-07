@@ -55,6 +55,22 @@ pipeline {
             }
         }
 
+        stage('Image Scan') {
+            steps {
+                //Put your image scanning tool 
+                echo 'Image Scanning Start'
+            }
+            post{
+                success{
+                    echo "Image Scanning Successfully"
+                }
+                failure{
+                    echo "Image Scanning Failed"
+                }
+            }
+        }
+        
+
 
     }
 }
