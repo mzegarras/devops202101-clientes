@@ -16,7 +16,7 @@ pipeline {
                  echo 'Pipeline Start Notification'
             }
         }
-    }
+
 
     stage('Code Analysis') {           
             steps {
@@ -41,4 +41,5 @@ pipeline {
         }
 
 
+    }
 }
