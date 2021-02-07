@@ -25,7 +25,7 @@ pipeline {
       // Execute when branch = 'master'
       stage("BASIC WHEN - Branch") {
          when {
-            expression { BRANCH_NAME ==~ /(main)/ }
+            expression { GIT_BRANCH ==~ /(main)/ }
         }
          steps {
             echo 'BASIC WHEN - Master Branch!'
