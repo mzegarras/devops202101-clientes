@@ -15,7 +15,7 @@ pipeline {
             steps {
                     //put webhook for your notification channel 
                     echo 'Pipeline Start Notification'
-                    sh 'printenv'
+                    sh 'echo "pruebas"; exit 1'
                     sh "echo ${GIT_BRANCH}"
             }
             post {
