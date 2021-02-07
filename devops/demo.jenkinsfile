@@ -22,15 +22,19 @@ pipeline {
                 always {
                     echo 'One way or another, I have finished'
                     deleteDir() /* clean up our workspace */
+                    sendEmail("One way or another, I have finished")
                 }
                 success {
-                echo 'I succeeded!'
+                    echo 'I succeeded!'
+                    sendEmail("I succeeded!")
                 }
                 unstable {
                     echo 'I am unstable :/'
+                    sendEmail("I am unstable :/")
                 }
                 failure {
-                echo 'ERROR'
+                    echo 'ERROR'
+                    sendEmail("ERROR")
                 }
             }
         }
