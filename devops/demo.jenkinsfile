@@ -56,27 +56,7 @@ pipeline {
          steps {
             echo 'BASIC WHEN - Master Branch!'
          }
-      }
-
-
-        stage('Build') {
-            agent {
-                docker { image 'maven:3.6.3-openjdk-11-slim' }
-            }
-            
-            steps {
-                sh 'printenv'
-                
-            }
-
-            post{
-                success {
-                    archiveArtifacts artifacts: 'target/lab01-0.0.1-SNAPSHOT.jar', fingerprint: true, onlyIfSuccessful: true
-                }
-            }
-        }
-      
-    
+      }    
 
 
     stage('Code Analysis') {           
@@ -101,7 +81,11 @@ pipeline {
             }
         }
 
-        stage("Build"){
+        stage("Build local s"){
+            agent {
+                docker { image 'maven:3.6.3-openjdk-11-slim' }
+            }
+            
             steps {
                 echo "Docker Build"
                 echo "Docker Push"
