@@ -26,14 +26,13 @@ pipeline {
             success {
                echo 'I succeeded!'
             }
-             unstable {
+            unstable {
                 echo 'I am unstable :/'
             }
-            success {
+            failure {
                echo 'ERROR'
             }
         }
-        
     }
 
 
