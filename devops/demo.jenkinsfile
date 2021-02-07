@@ -1,0 +1,21 @@
+pipeline {
+            
+    agent any
+
+    environment {
+        PROJECT_ID = 'devops202101'
+        CLUSTER_NAME = 'devops202101'
+        LOCATION = 'us-east4-c'
+        CREDENTIALS_ID = 'gke2'
+    }
+
+    stages {
+        stage('Initial Notification') {
+            steps {
+                 //put webhook for your notification channel 
+                 echo 'Pipeline Start Notification'
+            }
+        }
+    }
+
+}
