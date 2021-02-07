@@ -18,4 +18,27 @@ pipeline {
         }
     }
 
+    stage('Code Analysis') {           
+            steps {
+               //put your code scanner 
+                echo 'Code Scanning and Analysis'
+            }
+        }
+ 
+        stage('Robot Testing') {
+            steps {
+                //put your Testing
+                echo 'Robot Testing Start'
+            }
+            post{
+                success{
+                    echo "Robot Testing Successfully"
+                }
+                failure{
+                    echo "Robot Testing Failed"
+                }
+            }
+        }
+
+
 }
