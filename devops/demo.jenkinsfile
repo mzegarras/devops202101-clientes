@@ -40,6 +40,19 @@ pipeline {
             }
         }
 
+        stage("Build"){
+                echo "Docker Build"
+                echo "Docker Push"
+            post{
+                success{
+                    echo "Build and Push Successfully"
+                }
+                failure{
+                    echo "Build and Push Failed"
+                }
+            }
+        }
+
 
     }
 }
