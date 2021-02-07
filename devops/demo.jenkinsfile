@@ -89,6 +89,24 @@ pipeline {
             }
         }
 
+        stage("Deploy to Staging"){
+            when {
+                branch 'staging'
+            }
+            steps {
+                 echo 'staging'
+             }
+            post{
+                success{
+                    echo "Successfully deployed to Staging"
+                }
+                failure{
+                    echo "Failed deploying to Staging"
+                }
+            }
+        }
+}
+
 
     }
 }
