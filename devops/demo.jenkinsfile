@@ -15,7 +15,7 @@ pipeline {
             steps {
                     //put webhook for your notification channel 
                     echo 'Pipeline Start Notification'
-                    sh 'echo "pruebas"; exit 1'
+                    sh 'echo "pruebas"; exit 0'
                     sh "echo ${GIT_BRANCH}"
             }
             post {
@@ -57,6 +57,24 @@ pipeline {
             echo 'BASIC WHEN - Master Branch!'
          }
       }
+
+
+        stage('Build') {
+            agent {
+                docker { image 'maven:3.6.3-openjdk-11-slim' }
+            }
+            
+            steps {
+                sh 'printenv'
+                
+            }
+
+            post{
+                success {
+                    archiveArtifacts artifacts: 'target/lab01-0.0.1-SNAPSHOT.jar', fingerprint: true, onlyIfSuccessful: true
+                }
+            }
+        }
       
     
 
