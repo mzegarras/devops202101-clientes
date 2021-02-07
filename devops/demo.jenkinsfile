@@ -11,14 +11,40 @@ pipeline {
 
     stages {
 
-    stage('Initial Notification') {
-        steps {
-                //put webhook for your notification channel 
-                echo 'Pipeline Start Notification'
-                sh 'printenv'
-                sh "echo ${GIT_BRANCH}"
+        stage('Initial Notification') {
+            steps {
+                    //put webhook for your notification channel 
+                    echo 'Pipeline Start Notification'
+                    sh 'echo "pruebas"; exit 0'
+                    sh "echo ${GIT_BRANCH}"
+            }
+            post {
+                always {
+                    echo 'Siempre se ejecuta'
+                    deleteDir() /* clean up our workspace */
+                    sendEmail("One way or another, I have finished")
+                }
+                success {
+                    echo 'Se ejecutará si el build no falla'
+                    sendEmail("I succeeded!")
+                }
+                failure {
+                    echo 'Se ejecutará si el build falla'
+                    echo 'ERROR'
+                    sendEmail("ERROR")
+                }
+                unstable {
+                    echo 'Se ejecutará si el job se marca como inestable'
+                    echo 'I am unstable :/'
+                    sendEmail("I am unstable :/")
+                }
+                changed {
+                    echo 'Se ejecutará si fallo-->OK'
+                    echo 'Se ejecutará si OK-->fallo'
+                    sendEmail("I am unstable :/")
+                }
+            }
         }
-    }
 
 
       
@@ -30,8 +56,7 @@ pipeline {
          steps {
             echo 'BASIC WHEN - Master Branch!'
          }
-      }
-    
+      }    
 
 
     stage('Code Analysis') {           
@@ -56,7 +81,11 @@ pipeline {
             }
         }
 
-        stage("Build"){
+        stage("Build local s"){
+            agent {
+                docker { image 'maven:3.6.3-openjdk-11-slim' }
+            }
+            
             steps {
                 echo "Docker Build"
                 echo "Docker Push"
@@ -103,6 +132,7 @@ pipeline {
                 }
                 failure{
                     echo "Failed deploying to Production"
+                    sendEmail("Failed")
                 }
             }
         }
@@ -123,6 +153,27 @@ pipeline {
                 }
             }
         }
-
     }
+    post {
+        // Always runs. And it runs before any of the other post conditions.
+        always {
+            // Let's wipe out the workspace before we finish!
+            deleteDir()
+        }
+        success {
+            sendEmail("Successful");
+        }
+        unstable {
+            sendEmail("Unstable");
+        }
+        failure {
+            sendEmail("Failed");
+        }
+    }
+
 }
+
+ def sendEmail(status) {
+         sh 'echo ' + status
+    }
+
