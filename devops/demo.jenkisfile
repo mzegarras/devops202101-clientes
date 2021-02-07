@@ -1,0 +1,128 @@
+pipeline {
+            
+    agent any
+
+    environment {
+        PROJECT_ID = 'devops202101'
+        CLUSTER_NAME = 'devops202101'
+        LOCATION = 'us-east4-c'
+        CREDENTIALS_ID = 'gke2'
+    }
+
+    stages {
+
+    stage('Initial Notification') {
+        steps {
+                //put webhook for your notification channel 
+                echo 'Pipeline Start Notification'
+                sh 'printenv'
+                sh "echo ${GIT_BRANCH}"
+        }
+    }
+
+
+      
+      // Execute when branch = 'master'
+      stage("BASIC WHEN - Branch") {
+         when {
+            expression { GIT_BRANCH.contains("/features/") }
+        }
+         steps {
+            echo 'BASIC WHEN - Master Branch!'
+         }
+      }
+    
+
+
+    stage('Code Analysis') {           
+            steps {
+               //put your code scanner 
+                echo 'Code Scanning and Analysis'
+            }
+        }
+ 
+        stage('Robot Testing') {
+            steps {
+                //put your Testing
+                echo 'Robot Testing Start'
+            }
+            post{
+                success{
+                    echo "Robot Testing Successfully"
+                }
+                failure{
+                    echo "Robot Testing Failed"
+                }
+            }
+        }
+
+        stage("Build"){
+            steps {
+                echo "Docker Build"
+                echo "Docker Push"
+            }
+            post{
+                success{
+                    echo "Build and Push Successfully"
+                }
+                failure{
+                    echo "Build and Push Failed"
+                }
+            }
+        }
+
+        stage('Image Scan') {
+            steps {
+                //Put your image scanning tool 
+                echo 'Image Scanning Start'
+            }
+            post{
+                success{
+                    echo "Image Scanning Successfully"
+                }
+                failure{
+                    echo "Image Scanning Failed"
+                }
+            }
+        }
+
+
+        stage("Deploy to Production"){
+            when {
+                expression {
+                    return GIT_BRANCH=='origin/main'
+                }
+            }
+            steps { 
+                 echo 'Deploy to Production'
+ 
+             }
+            post{
+                success{
+                    echo "Successfully deployed to Production"
+                }
+                failure{
+                    echo "Failed deploying to Production"
+                }
+            }
+        }
+
+        stage("Deploy to Staging"){
+            when {
+                branch 'staging'
+            }
+            steps {
+                 echo 'staging'
+             }
+            post{
+                success{
+                    echo "Successfully deployed to Staging"
+                }
+                failure{
+                    echo "Failed deploying to Staging"
+                }
+            }
+        }
+
+    }
+}
