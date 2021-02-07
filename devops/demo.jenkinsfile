@@ -41,8 +41,10 @@ pipeline {
         }
 
         stage("Build"){
+            steps {
                 echo "Docker Build"
                 echo "Docker Push"
+            }
             post{
                 success{
                     echo "Build and Push Successfully"
